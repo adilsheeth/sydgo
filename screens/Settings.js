@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Text } from 'react-native';
 
-class Updates extends Component {
+class Settings extends Component {
     state = {  } 
     render() { 
         return (
-            <Text>Updates</Text>
+            <Text>Settings</Text>
         );
     }
 }
  
-export default Updates;
+export default Settings;
