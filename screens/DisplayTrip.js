@@ -1,36 +1,36 @@
 import axios from 'axios';
 import React, { Component } from 'react';
-import { Alert, Text } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 
 class DisplayTrip extends Component {
     state = {  
-        origin: this.props.origin,
-        destination: this.props.destination,
         routes: null,
     } 
 
     componentDidMount(){
+        console.log(this.props)
         this.getRoutes();
     }
 
     render() { 
-        if(this.state.origin == undefined || this.state.destination == undefined){
-            Alert.alert("An Error occured.");
-            this.props.navigation.navigate('Home');
-        } else if(this.state.routes == null){
+        if(this.state.routes == null){
             return(
                 <ActivityIndicator />
             );
         } else {
+            <View>
+                <Text>About Route</Text>
+                <Text>{this.props.route.params.originName} to {this.props.route.params.destinationName}</Text>
 
+            </View>
         }
     }
     getRoutes(){
-        let origin = this.state.origin.data;
-        let originType = this.state.origin.type == 'stop' ? 'any' : 'coord';
-        let destination = this.state.destination.data;
-        let destinationType = this.state.destination.type == 'stop' ? 'any' : 'coord';
+        let origin = this.props.route.params.origin.data;
+        let originType = this.props.route.params.origin.type == 'stop' ? 'any' : 'coord';
+        let destination = this.props.route.params.destination.data;
+        let destinationType = this.props.route.params.destination.type == 'stop' ? 'any' : 'coord';
         if(originType == 'coord'){
             origin = `${origin[1]}%3A${origin[0]}%3AEPSG%3A4326`
         }
@@ -45,8 +45,11 @@ class DisplayTrip extends Component {
             },
         }).then(response => {
             response = response.data;
-            console.log(response);
+            this.setState({
+                routes: response.journeys,
+            });
         });
+
     }
 }
  
