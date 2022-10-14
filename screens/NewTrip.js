@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { Component } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Button, Card, Divider, TextInput } from 'react-native-paper';
+import { ActivityIndicator, Button, Card, Divider, TextInput } from 'react-native-paper';
 
 class NewTrip extends Component {
     state = {  
@@ -63,6 +63,12 @@ class NewTrip extends Component {
                         mode='outlined' 
                         disabled={ this.state.originFinal != null && this.state.destinationFinal != null ? false : true }
                         style={styles.goButton}
+                        onPress={()=>{
+                            this.props.navigation.navigate('DisplayTrip', {
+                                origin: this.state.originFinal,
+                                destination: this.state.destinationFinal
+                            });
+                        }}
                     >
                         Search
                     </Button>
@@ -89,10 +95,13 @@ class NewTrip extends Component {
                                         <Card.Title 
                                             title={item.disassembledName == undefined ? item.name : item.disassembledName}
                                             subtitle={item.type == "suburb" ? "Suburb" : item.parent.name}
+
                                         />
                                     </Card>
                                 )
                             })
+                        : this.state.focused == 'origin' && this.state.originData == null ?
+                            <ActivityIndicator />
                         : null
                     }
                     {
@@ -119,12 +128,15 @@ class NewTrip extends Component {
                                     </Card>
                                 )
                             })
+                        : this.state.focused == 'destination' && this.state.destinationData == null ?
+                            <ActivityIndicator />
                         : null
                     }
                 </ScrollView>
             </View>
         );
     }
+    
     getSuggestions = (text, type) => {
         text = text.trim().replace(" ", "%20");
 
