@@ -1,56 +1,64 @@
 import axios from 'axios';
 import React, { Component } from 'react';
-import { Alert, Text, View } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
+import { Alert, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Card } from 'react-native-paper';
 
 class DisplayTrip extends Component {
-    state = {  
-        routes: null,
-    } 
-
+    state = {
+        route: null,
+    }
     componentDidMount(){
-        console.log(this.props)
-        this.getRoutes();
+        this.setState({
+            route: this.props.route.params.route,
+        })
     }
-
     render() { 
-        if(this.state.routes == null){
-            return(
+        return(
+            this.state.route == null ? 
                 <ActivityIndicator />
-            );
-        } else {
+            :
             <View>
-                <Text>About Route</Text>
-                <Text>{this.props.route.params.originName} to {this.props.route.params.destinationName}</Text>
+                <View style={styles.map}>
 
+                </View>
+                <View style={styles.body}>
+                    {
+                        this.state.route.legs.map(item => {
+                            let originTime = item.origin.departureTimeEstimated.slice(11).slice(0,5);
+                            let destinationTime = item.destination.arrivalTimeEstimated.slice(11).slice(0,5)
+                            return(
+                                <Card style={styles.card}>
+                                    <Text>{originTime}</Text>
+                                    <Text>{item.origin.disassembledName}</Text>
+                                    <View style={styles.info}>
+                                        
+                                    </View>
+                                    <Text>{destinationTime}</Text>
+                                    <Text>{item.destination.disassembledName}</Text>
+                                </Card>
+                            )
+                        })
+                    }
+                </View>
             </View>
-        }
-    }
-    getRoutes(){
-        let origin = this.props.route.params.origin.data;
-        let originType = this.props.route.params.origin.type == 'stop' ? 'any' : 'coord';
-        let destination = this.props.route.params.destination.data;
-        let destinationType = this.props.route.params.destination.type == 'stop' ? 'any' : 'coord';
-        if(originType == 'coord'){
-            origin = `${origin[1]}%3A${origin[0]}%3AEPSG%3A4326`
-        }
-        if(destinationType == 'coord'){
-            destination = `${destination[1]}%3A${destination[0]}%3AEPSG%3A4326`
-        }
-
-        axios.get(`https://api.transport.nsw.gov.au/v1/tp/trip?outputFormat=rapidJSON&coordOutputFormat=EPSG%3A4326&depArrMacro=dep&type_origin=${originType}&name_origin=${origin}&type_destination=${destinationType}&name_destination=${destination}&calcNumberOfTrips=8&TfNSWTR=true&version=10.2.1.42&itOptionsActive=1`,
-        {
-            headers: {
-                Authorization: "apikey 3l8JSGx9DoQ5ksMlLeZTyJC7L9O4YSZ61drC",
-            },
-        }).then(response => {
-            response = response.data;
-            this.setState({
-                routes: response.journeys,
-            });
-        });
-
+        )
     }
 }
  
 export default DisplayTrip;
+
+const styles = StyleSheet.create({
+    map: {
+        height: "50%",
+        backgroundColor: "dimgrey",
+    },
+    body: {
+        
+    },
+    info : {
+        height: "20%",
+    },
+    card : {
+        padding: 20,
+    }
+})

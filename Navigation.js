@@ -6,6 +6,7 @@ import Home from './screens/Home';
 import Settings from './screens/Settings';
 import NewTrip from './screens/NewTrip';
 import DisplayTrip from './screens/DisplayTrip';
+import Updates from './screens/Updates';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -16,8 +17,9 @@ export default class Navigation extends Component {
             <Stack.Navigator initialRouteName='Home' >
                 <Stack.Screen name='Home' component={Home} options={{title: 'SydGO'}} />
                 <Stack.Screen name='NewTrip' component={NewTrip} options={{title: 'New Trip'}} />
-                <Stack.Screen name='DisplayTrip' component={DisplayTrip} options={{title: 'Routes'}} />
+                <Stack.Screen name='DisplayTrip' component={DisplayTrip} options={{title: 'About Route'}} />
                 <Stack.Screen name='Settings' component={Settings} />
+                <Stack.Screen name='Updates' component={Updates} />
             </Stack.Navigator>
         );
     }

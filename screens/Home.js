@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { AnimatedFAB } from 'react-native-paper';
+import { AnimatedFAB, Button } from 'react-native-paper';
 
 class Home extends Component {
     state = {  } 
@@ -8,6 +8,7 @@ class Home extends Component {
         return (
             <View style={styles.container}> 
                 <Text style={styles.title}> Good Morning! </Text>
+                <Button onPress={()=>{this.props.navigation.navigate('Updates')}}>Updates</Button>
                 <AnimatedFAB 
                     label='New Trip' 
                     icon='plus' 

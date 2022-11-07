@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { createErrorHandler } from 'expo/build/errors/ExpoErrorManager';
 import React, { Component } from 'react';
 import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ActivityIndicator, Button, Card, Divider, TextInput } from 'react-native-paper';
@@ -12,6 +13,8 @@ const images = {
     9: require('../assets/icons/Ferry.png'),
     11: require('../assets/icons/SchoolBus.png'),
 }
+
+const routeColors = require('../assets/colors.json');
 
 class NewTrip extends Component {
     state = {  
@@ -87,7 +90,7 @@ class NewTrip extends Component {
                     </Button>
                         
                 </View>
-                <ScrollView style={styles.suggestions}>
+                <ScrollView  style={styles.suggestions}>
                     {
                         this.state.focused == 'origin' && this.state.originData != null ?
                             this.state.originData.map(item => {
@@ -192,12 +195,63 @@ class NewTrip extends Component {
                     {
                         this.state.focused == 'routes' && this.state.routes != null ? 
                             this.state.routes.map(item => {
+                                let length = item.legs.length - 1;
+                                console.log(item.legs[length].destination.name)
+                                let start = item.legs[0].origin.name.split(',')[0];
+                                let end = item.legs[length].destination.name.split(',')[0];
+                                let startTime = item.legs[0].origin.departureTimePlanned.slice(11).slice(0,5);
+                                let endTime = item.legs[length].destination.arrivalTimePlanned.slice(11).slice(0,5);
+                                
+
                                 return(
-                                    <Card 
+                                    <Card                                                                 
                                         style={styles.card}
+                                        onPress={()=>{
+                                            this.props.navigation.navigate("DisplayTrip", {
+                                                route: item,
+                                            })
+                                        }}
                                     >
-                                        <View style={styles.row}>
-                                            
+                                        <View style={styles.cardContainer}>   
+                                            <View style={styles.left}>
+                                                <Text>{start}</Text>
+                                                <Text style={[styles.time, {position: 'absolute', top: 20, left: -2}]}>{startTime}</Text>
+                                            </View>
+                                            <View style={styles.centre}>
+                                                <View>
+                                                    
+                                                </View>
+                                                <View style={{flexDirection: "row", width: '50%'}}>
+                                                    {
+                                                        item.legs.map(icon => {
+                                                            let iconId = icon.transportation.product.iconId;
+                                                            let route = icon.transportation.disassembledName;
+                                                            let routeColor = routeColors[route] != undefined ? routeColors[route] : "lightblue";
+
+
+                                                            return(
+                                                                <View style={{flexDirection: "row"}}>
+                                                                    <Image style={styles.image} source={images[iconId]} />
+                                                                    <Text style={{
+                                                                        backgroundColor: routeColor, 
+                                                                        color: "white", 
+                                                                        fontWeight: 'bold',
+                                                                        borderRadius: 15,
+                                                                        paddingHorizontal: 5,
+                                                                        paddingTop: 4,
+                                                                        height: 30,
+                                                                    }}>{route}</Text>
+                                                                </View>
+                                                            )
+                                                        })
+                                                    }
+                                                </View>
+                                            </View>
+                                            <View style={styles.right}>
+                                                <Text>{end}</Text>
+                                                <Text style={styles.time}>{endTime}</Text>
+                                                
+                                            </View>
                                         </View>
                                     </Card>
                                 )
@@ -281,6 +335,9 @@ const styles = StyleSheet.create({
     container: {
         margin: 15,
     },
+    suggestions: {
+        marginBottom: 80,
+    },
     totext: {
         textAlign: 'center',
         marginTop: 10,
@@ -301,4 +358,25 @@ const styles = StyleSheet.create({
         width: 30,
         height: 30,
     },
+    cardContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 10,
+    },
+    time: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        alignSelf: 'flex-end',
+    },
+    routeCardContainer: {
+        paddingHorizontal: 10,
+        marginTop: 10,
+    },
+    left: {
+        alignItems: 'flex-start',
+    },
+    right: {
+        alignItems: 'flex-end',
+    }
+
 })
