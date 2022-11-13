@@ -8,7 +8,7 @@ class Home extends Component {
         return (
             <View style={styles.container}> 
                 <Text style={styles.title}> Good Morning! </Text>
-                <Button onPress={()=>{this.props.navigation.navigate('Updates')}}>Updates</Button>
+                <Text>This app is under development. Some features may not be available, and changes will be made over time. Jowever, the basic functionality works :)</Text>
                 <AnimatedFAB 
                     label='New Trip' 
                     icon='plus' 
@@ -39,3 +39,5 @@ const styles = StyleSheet.create({
         margin: 10,
     },
 })
+
+//Exporting: npx expo build:android || ios
