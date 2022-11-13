@@ -28,6 +28,7 @@ class NewTrip extends Component {
         originValue: '',
         destinationValue: '',  
         routes: null,      
+        saved: false,
     } 
     render() { 
         return (
@@ -209,6 +210,9 @@ class NewTrip extends Component {
                                         onPress={()=>{
                                             this.props.navigation.navigate("DisplayTrip", {
                                                 route: item,
+                                                start: this.state.originFinal,
+                                                end: this.state.destinationFinal,
+                                                saved: this.state.saved,
                                             })
                                         }}
                                     >
